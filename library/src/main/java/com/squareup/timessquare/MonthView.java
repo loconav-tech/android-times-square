@@ -17,6 +17,7 @@ import androidx.core.view.ViewCompat;
 
 import java.text.DateFormat;
 import java.text.NumberFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -31,6 +32,9 @@ public class MonthView extends LinearLayout {
   private boolean isRtl;
   private Locale locale;
   private boolean alwaysDigitNumbers;
+
+  // Locale list for which rtl value needs to be override
+  private static List<String> overrideLocales = Arrays.asList("ar");
 
   public static MonthView create(ViewGroup parent, LayoutInflater inflater,
       DateFormat weekdayNameFormat, Listener listener, Calendar today, int dividerColor,
@@ -67,7 +71,12 @@ public class MonthView extends LinearLayout {
       view.setDayBackground(dayBackgroundResId);
     }
 
-    view.isRtl = getLayoutDirectionFromLocale(locale) == ViewCompat.LAYOUT_DIRECTION_RTL;
+    if (overrideLocales.contains(locale.getLanguage())) {
+      view.isRtl = false;
+    } else {
+      view.isRtl = getLayoutDirectionFromLocale(locale) == ViewCompat.LAYOUT_DIRECTION_RTL;
+    }
+
     view.locale = locale;
     view.alwaysDigitNumbers = showAlwaysDigitNumbers;
     int firstDayOfWeek = today.getFirstDayOfWeek();
